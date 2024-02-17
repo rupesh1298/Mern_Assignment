@@ -228,8 +228,8 @@ const decreamentQuantity = async (req, res) => {
                     quantity: item.qty,
                 }
             }),
-            success_url: `https://food-front-five.vercel.app/success`,
-            cancel_url: `https://food-front-five.vercel.app/`
+            success_url: `https://racfood.netlify.app/success`,
+            cancel_url: `https://racfood.netlify.app/`
         })
         res.status(200).json({ url: session.url })
     } catch (error) {

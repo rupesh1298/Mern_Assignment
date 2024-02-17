@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const router=require('./routes');
 
 app.use(cors({
-    origin:["http://localhost:3000","https://food-front-five.vercel.app"],
+    origin:["https://racfood.netlify.app"],
     credentials:true,
 }));
 app.use(express.json());
