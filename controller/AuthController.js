@@ -31,11 +31,11 @@ const login = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ success: false, message: "Invalid credentials" })
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "15m" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "30s" });
 
         res.cookie("token", token, {
             httpOnly: true,
-            expires: new Date(Date.now() + 1000 * 60 * 15),
+            expires: new Date(Date.now() + 1000 * 30),
             secure: true,
             sameSite: "none"
         }).status(200).json({ success: true, message: "Logged in successfully" })
