@@ -25,11 +25,11 @@ const login = async (req, res) => {
     try {
         let user = await User.findOne({ email });
         if (!user) {
-            return res.staitus(400).json({ success: false, message: "User does not exist" })
+            return res.staitus(400).json({ success: false, message: "User does not exist",token:false })
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ success: false, message: "Invalid credentials" })
+            return res.status(400).json({ success: false, message: "Invalid credentials",token:false })
         }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "20m" });
 
@@ -38,9 +38,9 @@ const login = async (req, res) => {
             expires: new Date(Date.now() + 1000 * 60 * 20),
             secure: true,
             sameSite: "none"
-        }).status(200).json({ success: true, message: "Logged in successfully",token:token })
+        }).status(200).json({ success: true, message: "Logged in successfully",token:true })
     } catch (error) {
-        res.status(500).json({ success: false, message: error.message })
+        res.status(500).json({ success: false, message: error.message,token:false })
     }
 };
 
