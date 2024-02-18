@@ -44,13 +44,21 @@ const login = async (req, res) => {
     }
 };
 
+// const logout = (req, res) => {
+//     try {
+//         res.clearCookie("token").status(200).json({ success: true, message: "Logged out successfully",token:false })
+//     } catch (error) {
+//         return res.status(500).json({ success: false, message: error.message,token:true })
+//     }
+// };
 const logout = (req, res) => {
     try {
-        res.clearCookie("token").status(200).json({ success: true, message: "Logged out successfully",token:false })
+        res.clearCookie("token", { path: '/' }).status(200).json({ success: true, message: "Logged out successfully", token: false });
     } catch (error) {
-        return res.status(500).json({ success: false, message: error.message,token:true })
+        res.status(500).json({ success: false, message: error.message, token: true });
     }
 };
+
 
 const getUser = async (req, res) => {
     const reqId = req.id;
