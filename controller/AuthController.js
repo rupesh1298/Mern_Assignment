@@ -31,12 +31,11 @@ const login = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ success: false, message: "Invalid credentials",token:false })
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "30s" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: "20m" });
 
         res.cookie("token", token, {
-            path: "/",
             httpOnly: true,
-            expires: new Date(Date.now() + 1000 * 30),
+            expires: new Date(Date.now() + 1000 * 60 * 20),
             secure: true,
             sameSite: "none"
         }).status(200).json({ success: true, message: "Logged in successfully",token:true })
@@ -54,7 +53,7 @@ const login = async (req, res) => {
 // };
 const logout = (req, res) => {
     try {
-        res.clearCookie("token", { path: '/' }).status(200).json({ success: true, message: "Logged out successfully", token: false });
+        res.clearCookie("token").status(200).json({ success: true, message: "Logged out successfully", token: false });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message, token: true });
     }
