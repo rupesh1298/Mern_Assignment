@@ -38,7 +38,7 @@ const login = async (req, res) => {
             expires: new Date(Date.now() + 1000 * 60 * 20),
             secure: true,
             sameSite: "none"
-        }).status(200).json({ success: true, message: "Logged in successfully" })
+        }).status(200).json({ success: true, message: "Logged in successfully",token:token })
     } catch (error) {
         res.status(500).json({ success: false, message: error.message })
     }
