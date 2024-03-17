@@ -1,5 +1,5 @@
 
-const Food = require('../models/Food');
+const Book = require('../models/Book');
 const User = require('../models/User');
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -10,9 +10,9 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 //     const userId = req.params.id;
 //     const { id, name, price, image, quantity } = req.body;
 //     try {
-//         let existingItem = await Food.findOne({ id: id, userId: userId });
+//         let existingItem = await Book.findOne({ id: id, userId: userId });
 //         if (existingItem) {
-//             let updatedItem = await Food.findOneAndUpdate({ id, userId },
+//             let updatedItem = await Book.findOneAndUpdate({ id, userId },
 //                 {
 //                     $set:
 //                     {
@@ -28,7 +28,7 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 //             }
 //             return res.status(200).json({ success: true, message: "added to cart" });
 //         }
-//         let newFood = await Food.create({
+//         let newBook = await Book.create({
 //             id,
 //             name,
 //             price,
@@ -38,8 +38,8 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 //             totalPrice: price * quantity,
 //             userId
 //         });
-//         const savedFood = await newFood.save();
-//         let user = await User.findOneAndUpdate({ _id: userId }, { $push: { cartItems: savedFood._id } });
+//         const savedBook = await newBook.save();
+//         let user = await User.findOneAndUpdate({ _id: userId }, { $push: { cartItems: savedBook._id } });
 //         if (!user) {
 //             return res.status(400).json({ success: false, message: "failed added to cart" });
 //         }
@@ -55,10 +55,10 @@ const addtoCart = async (req, res) => {
         const userId  = req.params.id;
         console.log(userId);
         const findUser = await User.findById(userId);
-        const { id, name, price, qty, rating, img } = req.body;
+        const { id, title, price, qty, rating, cover_image } = req.body;
 
         // Check if the item is already in the user's cart
-        const existingItem = await Food.findOne({ id, userId: userId });
+        const existingItem = await Book.findOne({ id, userId: userId });
 
         if (existingItem) {
             // Update the quantity and total price of the existing item
@@ -67,13 +67,13 @@ const addtoCart = async (req, res) => {
             await existingItem.save();
         } else {
             // Add the item to the cart if it doesn't exist
-            const newItem = new Food({
+            const newItem = new Book({
                 id,
-                name,
+                title,
                 price,
                 qty,
                 rating,
-                img,
+                cover_image,
                 userId: userId,
                 totalPrice: price * qty,
             });
@@ -92,7 +92,7 @@ const addtoCart = async (req, res) => {
 const getCart = async (req, res) => {
     const userId = req.params.id
     try {
-        const cartItems = await Food.find({ userId: userId });
+        const cartItems = await Book.find({ userId: userId });
         if (!cartItems) {
             return res.status(400).json({ success: false, message: "No items found" });
         }
@@ -107,51 +107,29 @@ const getCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
     const id = req.params.id;
     try {
-        let food = await Food.findOneAndDelete({ _id: id });
-        if (!food) {
-            return res.status(404).json({ success: false, message: "Food not found" }); // Change status code to 404 for not found
+        let book = await Book.findOneAndDelete({ _id: id });
+        if (!book) {
+            return res.status(404).json({ success: false, message: "Book not found" }); // Change status code to 404 for not found
         }
-        return res.status(200).json({ success: true, message: "Food removed from cart" });
+        return res.status(200).json({ success: true, message: "Book removed from cart" });
     } catch (error) {
-        console.error("Error removing food from cart:", error);
-        return res.status(500).json({ success: false, message: "Failed to remove food from cart", error: error.message });
+        console.error("Error removing Book from cart:", error);
+        return res.status(500).json({ success: false, message: "Failed to remove Book from cart", error: error.message });
     }
 };
 
 
-// const increamentQuantity = async (req, res) => {
-//     const id = req.params.id;
-//     try {
-//         let food = await Food.findOneAndUpdate({ _id: id }, {
-//             $set: {
-//                 qty: { $add: ["$qty", 1] },
-//                 totalPrice: { $multiply: ["$price", { $add: ["$qty", 1] }] }
-//             }
-//         },
-//             {
-//                 upsert: true,
-//                 new: true
-//             });
-//         if (!food) {
-//             return res.status(400).json({ success: false, message: "Failed to increament quantity" })
-//         }
-//         return res.status(200).json({ success: true, message: "Quantity increamented", food })
-//     } catch (error) {
-//         return res.status(500).json({ success: false, message: error.message })
-//     }
-// }
-
  const increamentQuantity = async (req, res) => {
     const id = req.params.id;
     try {
-        let food = await Food.findById(id); // Find the food item by its ID
-        if (!food) {
-            return res.status(400).json({ message: "Food not found" });
+        let book = await Book.findById(id); // Find the Book item by its ID
+        if (!book) {
+            return res.status(400).json({ message: "Book not found" });
         }
         // Update quantity and total price
-        food.qty += 1;
-        food.totalPrice = food.price * food.qty;
-        await food.save(); // Save the updated food item
+        book.qty += 1;
+        book.totalPrice = book.price * book.qty;
+        await book.save(); // Save the updated Book item
         res.status(200).json({ message: "Quantity updated successfully" });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -163,7 +141,7 @@ const removeFromCart = async (req, res) => {
 // const decreamentQuantity = async (req, res) => {
 //     const id = req.params.id;
 //     try {
-//        let food=await Food.findOneAndUpdate({ _id: id ,qty :{$gt:0}}, {
+//        let Book=await Book.findOneAndUpdate({ _id: id ,qty :{$gt:0}}, {
 //         $set:{
 //             quantity:{$subtract:["$qty",1]},
 //             totalPrice:{$multiply:["$totalPrice","$price"]}
@@ -172,10 +150,10 @@ const removeFromCart = async (req, res) => {
 //         upsert: true,
 //         new: true
 //        })
-//        if(!food){
+//        if(!Book){
 //               return res.status(400).json({success:false,message:"Failed to decreament quantity"})
 //        }
-//        return res.status(200).json({success:true,message:"Quantity decreamented",food})
+//        return res.status(200).json({success:true,message:"Quantity decreamented",Book})
 //     } catch (error) {
 //         return res.status(500).json({ success: false, message: error.message })
 //     }
@@ -183,21 +161,21 @@ const removeFromCart = async (req, res) => {
 const decreamentQuantity = async (req, res) => {
     const id = req.params.id;
     try {
-        let food = await Food.findById(id); // Find the food item by its ID
-        if (!food) {
-            return res.status(400).json({ message: "Food not found" });
+        let book = await Book.findById(id); // Find the Book item by its ID
+        if (!book) {
+            return res.status(400).json({ message: "Book not found" });
         }
         // Decrement quantity
-        food.qty -= 1;
+        book.qty -= 1;
         // Update total price
-        food.totalPrice = food.price * food.qty;
-        // Save the updated food item
-        await food.save();
+        book.totalPrice = book.price * book.qty;
+        // Save the updated book item
+        await book.save();
         
         // Check if quantity is zero after decrementing
-        if (food.qty === 0) {
+        if (book.qty === 0) {
             // If quantity is zero, remove the item from the cart
-            await Food.findByIdAndDelete(id);
+            await Book.findByIdAndDelete(id);
         }
 
         res.status(200).json({ message: "Quantity updated successfully" });
@@ -211,7 +189,7 @@ const decreamentQuantity = async (req, res) => {
     //middleware se
     const userId = req.id
     try {
-        const cartItems = await Food.find({ userId });
+        const cartItems = await Book.find({ userId });
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],
             mode: "payment",
@@ -220,16 +198,16 @@ const decreamentQuantity = async (req, res) => {
                     price_data: {
                         currency: "inr",
                         product_data: {
-                            name: item.name,
-                            images: [item.img]
+                            name: item.title,
+                            images: [item.cover_image]
                         },
                         unit_amount: item.price * 100,
                     },
                     quantity: item.qty,
                 }
             }),
-            success_url: `https://racfood.netlify.app/success`,
-            cancel_url: `https://racfood.netlify.app/`
+            success_url: `http://localhost:3000/success`,
+            cancel_url: `http://localhost:3000/cancel`
         })
         res.status(200).json({ url: session.url })
     } catch (error) {
@@ -242,7 +220,7 @@ const decreamentQuantity = async (req, res) => {
 const clearCart=async(req,res)=>{
     const userId=req.id;
     try {
-        const deletedItems=await Food.deleteMany({userId});
+        const deletedItems=await Book.deleteMany({userId});
         const deletedList=await User.findOneAndUpdate({_id:userId},{cartItems:[]});
         if(!deletedItems){
             return res.status(400).json({success:false,message:"Failed to clear cart"})
@@ -253,4 +231,42 @@ const clearCart=async(req,res)=>{
     }
 }
 
-module.exports = { addtoCart, getCart, removeFromCart, increamentQuantity, decreamentQuantity, checkout,clearCart }
+const addBook = async (req, res) => {
+    const{id,title,author,publication_year,genre,price,qty,rating,description,cover_image}=req.body;
+    try {
+        const data = new Book(req.body);
+        const newBook=await data.save();
+        console.log(newBook)
+        res.status(201).json(newBook);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+const editBook = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedBook = await Book.findByIdAndUpdate(id, req.body, { new: true });
+        res.status(200).json(updatedBook);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+const deleteBook = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Book.findByIdAndDelete(id);
+        res.status(200).json({ message: 'Book deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+const getAllBooks=async(req,res)=>{
+    try {
+        const books=await Book.find();
+        res.status(200).json(books);
+    } catch (error) {
+        res.status(500).json({error:error.message});
+    }
+}
+module.exports = { addtoCart, getCart, removeFromCart, increamentQuantity, decreamentQuantity, checkout,clearCart,addBook,editBook,deleteBook,getAllBooks }

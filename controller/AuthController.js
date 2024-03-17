@@ -181,7 +181,7 @@ const sendEmail = async (req, res) => {
 <table style="border-collapse: collapse; width: 100%;">
     <thead>
         <tr style="background-color: #f2f2f2;">
-            <th style="border: 1px solid #ddd; padding: 8px;">Description</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Book Name</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Quantity</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Price</th>
             <th style="border: 1px solid #ddd; padding: 8px;">Total</th>
@@ -190,10 +190,10 @@ const sendEmail = async (req, res) => {
     <tbody>
         ${cart.map(product => `
             <tr>
-                <td style="border: 1px solid #ddd; padding: 8px;">${product.name}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">${product.qty}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">$${product.price.toFixed(2)}</td>
-                <td style="border: 1px solid #ddd; padding: 8px;">$${(product.qty * product.price).toFixed(2)}</td>
+                <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">${product.title}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;text-align: center;">${product.qty}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;text-align: center;">$${product.price.toFixed(2)}</td>
+                <td style="border: 1px solid #ddd; padding: 8px;text-align: center;">$${(product.qty * product.price).toFixed(2)}</td>
             </tr>
         `).join('')}
         <tr style="background-color: #f2f2f2;">

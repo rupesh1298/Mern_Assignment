@@ -19,7 +19,7 @@ const userSchema=new mongoose.Schema({
         default:[
            {
             type:mongoose.Schema.Types.ObjectId,
-            ref:"food"
+            ref:"book"
            }
         ]
     },
