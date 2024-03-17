@@ -206,8 +206,8 @@ const decreamentQuantity = async (req, res) => {
                     quantity: item.qty,
                 }
             }),
-            success_url: `http://localhost:3000/success`,
-            cancel_url: `http://localhost:3000/cancel`
+            success_url: `https://racassignment.netlify.app/success`,
+            cancel_url: `https://racassignment.netlify.app/`
         })
         res.status(200).json({ url: session.url })
     } catch (error) {
