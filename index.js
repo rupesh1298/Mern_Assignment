@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const router=require('./routes');
 
 app.use(cors({
-    origin:["http://localhost:3000"],
+    origin:["https://racassignment.netlify.app","http://localhost:3000"],
     credentials:true,
 }));
 app.use(express.json());
